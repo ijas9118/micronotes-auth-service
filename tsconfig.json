@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "baseUrl": "./",
     "rootDir": "./src",
     "module": "NodeNext",
@@ -13,6 +15,7 @@
     "strict": true,
     "outDir": "./dist",
     "skipLibCheck": true
+
   },
   "tsc-alias": {
     "resolveFullPaths": true
