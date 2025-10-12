@@ -10,6 +10,7 @@ const EnvSchema = z.object({
   PORT: z.coerce.number().default(3001),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]),
   DATABASE_URL: z.string(),
+  REDIS_URL: z.string(),
   JWT_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string(),

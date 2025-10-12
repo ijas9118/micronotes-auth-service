@@ -5,7 +5,5 @@ export type IAuthController = {
   login: (req: Request, res: Response, next: NextFunction) => void;
   logout: (req: Request, res: Response, next: NextFunction) => void;
   refresh: (req: Request, res: Response, next: NextFunction) => void;
-  // validateToken: (req: Request, res: Response, next: NextFunction) => void;
-  // getProfile: (req: Request, res: Response, next: NextFunction) => void;
-  // deleteAccount: (req: Request, res: Response, next: NextFunction) => void;
+  verifyOTP: (req: Request, res: Response, next: NextFunction) => void;
 };

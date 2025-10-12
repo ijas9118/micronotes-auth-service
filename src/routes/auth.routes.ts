@@ -11,6 +11,7 @@ const authController = container.get<IAuthController>(TYPES.AuthController);
 const router: Router = Router();
 
 router.post("/register", authController.register);
+router.post("/verify-otp", authController.verifyOTP);
 router.post("/login", authController.login);
 router.post("/logout", authMiddleware, authController.logout);
 router.post("/refresh", authMiddleware, authController.refresh);

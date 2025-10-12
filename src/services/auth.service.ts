@@ -9,8 +9,11 @@ import type { IRefreshTokenRepository } from "@/repositories/interfaces/refresh-
 import type { IUserRepository } from "@/repositories/interfaces/user.repository.interface.js";
 import type { AuthTokens, JWTPayload } from "@/types/index.js";
 
+import logger from "@/configs/logger.js";
+import { redisClient } from "@/configs/redis.config.js";
 import env from "@/configs/validate-env.js";
 import TYPES from "@/ioc/types.js";
+import { sendUserRegistrationEvent } from "@/kafka/user-register.producer.js";
 import { HttpError } from "@/utils/http-error-class.js";
 import { isTokenExpired } from "@/utils/jwt-helpers.js";
 
@@ -42,6 +45,14 @@ export class AuthService implements IAuthService {
     return { accessToken, refreshToken };
   }
 
+  private _generateOtp(length = 4): string {
+    let otp = "";
+    for (let i = 0; i < length; i++) {
+      otp += Math.floor(Math.random() * 10).toString();
+    }
+    return otp;
+  }
+
   async register(email: string, password: string): Promise<void> {
     const userExisting = await this._userRepo.findByEmail(email);
 
@@ -50,8 +61,35 @@ export class AuthService implements IAuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = this._generateOtp();
 
-    await this._userRepo.createUser(email, hashedPassword);
+    const redisKey = `registration:otp:${email}`;
+    const redisValue = JSON.stringify({ email, hashedPassword, otp });
+    await redisClient.set(redisKey, redisValue, { EX: 5 * 60 });
+    logger.info(`otp: ${otp}`);
+  }
+
+  async verifyOTP(otp: string, email: string): Promise<void> {
+    const redisKey = `registration:otp:${email}`;
+    const stored = await redisClient.get(redisKey);
+    if (!stored) {
+      throw new HttpError("OTP expired or not found", StatusCodes.BAD_REQUEST);
+    }
+
+    const { email: storedEmail, hashedPassword, otp: storedOtp } = JSON.parse(stored);
+
+    if (storedOtp !== otp || storedEmail !== email) {
+      throw new HttpError("Invalid OTP", 400);
+    }
+
+    const user = await this._userRepo.createUser(storedEmail, hashedPassword);
+
+    await sendUserRegistrationEvent({
+      userId: user.id,
+      email: user.email,
+    });
+
+    await redisClient.del(redisKey);
   }
 
   async login(email: string, password: string): Promise<AuthTokens> {

@@ -5,5 +5,5 @@ export type IAuthService = {
   login: (email: string, password: string) => Promise<AuthTokens>;
   logout: (userId: string) => Promise<void>;
   refresh: (refreshToken: string) => Promise<AuthTokens>;
-  // deleteUser: (userId: string) => Promise<void>;
+  verifyOTP: (otp: string, email: string) => Promise<void>;
 };

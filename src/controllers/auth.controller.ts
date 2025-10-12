@@ -20,6 +20,12 @@ export class AuthController implements IAuthController {
     res.status(StatusCodes.OK).json({ message: `OTP sent to ${email}` });
   };
 
+  verifyOTP = async (req: Request, res: Response) => {
+    const { otp, email } = req.body;
+    await this._authService.verifyOTP(otp, email);
+    res.status(StatusCodes.OK).json({ message: "OTP verified" });
+  };
+
   login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const tokens = await this._authService.login(email, password);
