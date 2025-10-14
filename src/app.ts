@@ -22,7 +22,7 @@ app.get("/health", (_req, res) =>
     timestamp: new Date().toISOString(),
   }));
 
-app.use("/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 app.use(errorHandler);
 
