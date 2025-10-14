@@ -46,11 +46,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build --no-cache . -t ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-notes-service:${{ github.sha }}
-          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-notes-service:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-notes-service:latest
+          docker build --no-cache . -t ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-auth-service:${{ github.sha }}
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-auth-service:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-auth-service:latest
         continue-on-error: false
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-notes-service:${{ github.sha }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-notes-service:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-auth-service:${{ github.sha }}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/micronotes-auth-service:latest
