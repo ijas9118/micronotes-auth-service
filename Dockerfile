@@ -1,22 +1,29 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine AS builder
 
 RUN corepack enable
 
 WORKDIR /app
 
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-COPY drizzle.config.ts ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
 RUN pnpm run build
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+FROM node:20-alpine AS production
+
+RUN corepack enable
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --prod && \
+    pnpm store prune && \
+    rm -rf /root/.npm /root/.cache
+
+COPY --from=builder /app/dist ./dist
+
 
 EXPOSE 3001
-
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "dist/server.js"]

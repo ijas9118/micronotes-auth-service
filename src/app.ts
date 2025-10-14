@@ -6,6 +6,7 @@ import express from "express";
 import helmet from "helmet";
 
 import errorHandler from "./middleware/error-handler.js";
+import { limiter } from "./middleware/rate-limit.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 
 const app: Application = express();
@@ -14,6 +15,8 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(limiter);
 
 app.get("/health", (_req, res) =>
   res.json({
