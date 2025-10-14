@@ -1,4 +1,4 @@
-name: Micronotes Notes Service CI/CD
+name: Micronotes Auth Service CI/CD
 
 on:
   push:
