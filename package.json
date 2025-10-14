@@ -2,6 +2,7 @@
   "name": "auth-service",
   "type": "module",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.18.2",
   "description": "",
   "author": "",
   "license": "ISC",
