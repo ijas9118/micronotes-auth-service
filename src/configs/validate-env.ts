@@ -11,6 +11,7 @@ const EnvSchema = z.object({
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]),
   DATABASE_URL: z.string(),
   REDIS_URL: z.string(),
+  KAFKA_BROKER: z.string(),
   JWT_SECRET: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string(),
