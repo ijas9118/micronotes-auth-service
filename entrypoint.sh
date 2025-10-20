@@ -5,4 +5,4 @@ until nc -z postgres-db 5432; do
 done
 pnpm db:generate
 pnpm db:migrate
-pnpm start
+pnpm run dev
