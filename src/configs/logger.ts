@@ -1,30 +1,31 @@
 import winston from "winston";
+import LokiTransport from "winston-loki";
 
 import env from "./validate-env.js";
 
-const logFormat = winston.format.printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} [${level}]: ${stack ?? message}`;
+const logFormat = winston.format.printf(({ level, message, timestamp, stack, service }) => {
+  return `${timestamp} [${service || "unknown"}] [${level}]: ${stack ?? message}`;
 });
 
-const customColors = {
-  error: "red",
-  warn: "yellow",
-  info: "cyan",
-  http: "green",
-  debug: "blue",
-};
-
-winston.addColors(customColors);
-
 const logger = winston.createLogger({
-  level: env.LOG_LEVEL,
+  level: env.LOG_LEVEL || "info",
   format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.timestamp({ format: "HH:mm:ss" }),
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     winston.format.errors({ stack: true }),
     logFormat,
   ),
-  transports: [new winston.transports.Console()],
+  defaultMeta: { service: env.SERVICE_NAME || "unknown-service" },
+  transports: [
+    new winston.transports.Console(),
+    new LokiTransport({
+      host: "http://loki:3100",
+      labels: { service: env.SERVICE_NAME || "unknown-service" },
+      json: true,
+      replaceTimestamp: true,
+      batching: true,
+      interval: 5,
+    }),
+  ],
 });
 
 export default logger;
