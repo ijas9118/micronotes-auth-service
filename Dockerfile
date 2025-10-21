@@ -23,7 +23,7 @@ RUN pnpm install --frozen-lockfile --prod && \
     rm -rf /root/.npm /root/.cache
 
 COPY --from=builder /app/dist ./dist
-
+COPY drizzle.config.json ./
 
 EXPOSE 3001
 CMD ["node", "dist/server.js"]
