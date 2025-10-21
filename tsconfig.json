@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": "./",
-    "rootDir": "./src",
+    "rootDir": ".",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "paths": {
@@ -19,6 +19,5 @@
   "tsc-alias": {
     "resolveFullPaths": true
   },
-  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
