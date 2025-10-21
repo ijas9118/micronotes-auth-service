@@ -7,7 +7,7 @@ export default defineConfig({
   out: "./migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: env.DATABASE_URL || "postgresql://micronotes:cantremember@localhost:5432/micronotes_auth",
   },
   verbose: true,
   strict: true,
